@@ -43,13 +43,18 @@ export default function App() {
             </Form>
           </div> */}
           <nav>
-            <ul className="flex flex-row justify-center gap-6 mt-6">
+            <ul className="flex flex-row justify-center gap-5 mt-6">
               <li>
-                <Link to={`/tasks/addTask`}>Add New Task</Link>
+                <button className="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded">
+                  <Link to={`/tasks/addTask`}>Add New Task</Link>
+                </button>
               </li>
               <li>
-                <Link to={`/tasks/viewTasks`}>View All Tasks</Link>
+                <button className="bg-green-500 hover:bg-green-400 text-white font-bold py-2 px-4 border-b-4 border-green-700 hover:border-green-500 rounded">
+                  <Link to={`/tasks/viewTasks`}>View All Tasks</Link>
+                </button>
               </li>
+              <li></li>
               {/* <li>
                 <a href={`/contacts/1`}>Your Name</a>
               </li>

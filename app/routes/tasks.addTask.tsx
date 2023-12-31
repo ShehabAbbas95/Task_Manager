@@ -1,9 +1,14 @@
 import { Form, useNavigate } from "@remix-run/react";
-import { createEmptyContact } from "../data";
+import { addNewTask } from "../data";
+import { ActionFunctionArgs, redirect } from "@remix-run/node";
 
-export const action = async () => {
-  const contact = await createEmptyContact();
-  // return redirect(`/contacts/${contact.id}/edit`);
+export const action = async ({ request }: ActionFunctionArgs) => {
+  // Get the form data
+  const formData = await request.formData();
+  // Extract the task details from the form data
+  const details = Object.fromEntries(formData);
+  await addNewTask(details);
+  return redirect(`/`);
 };
 
 export default function AddTask() {
@@ -25,16 +30,12 @@ export default function AddTask() {
           <textarea className="border-2" name="desc" rows={6} />
         </p>
         <div className="px-2 flex gap-4">
-          <button
-            className="bg-blue-600 border-2 px-2 rounded-lg"
-            type="submit"
-          >
+          <button className="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded">
             Add Task
           </button>
           <button
-            className="bg-red-600 border-2 px-4 rounded-lg"
-            type="button"
             onClick={() => navigate(-1)}
+            className="bg-red-500 hover:bg-red-400 text-white font-bold py-2 px-4 border-b-4 border-red-700 hover:border-red-500 rounded"
           >
             Cancel
           </button>

@@ -7,17 +7,13 @@ import { matchSorter } from "match-sorter";
 import sortBy from "sort-by";
 import invariant from "tiny-invariant";
 
-type ContactMutation = {
+type TaskDetails = {
   id?: string;
-  first?: string;
-  last?: string;
-  avatar?: string;
-  twitter?: string;
-  notes?: string;
-  favorite?: boolean;
+  title?: string;
+  description?: string;
 };
 
-export type ContactRecord = ContactMutation & {
+export type ContactRecord = TaskDetails & {
   id: string;
   createdAt: string;
 };
@@ -38,15 +34,15 @@ const fakeContacts = {
     return fakeContacts.records[id] || null;
   },
 
-  async create(values: ContactMutation): Promise<ContactRecord> {
-    const id = values.id || Math.random().toString(36).substring(2, 9);
+  async create(values: TaskDetails): Promise<ContactRecord> {
+    const id = Math.random().toString(36).substring(2, 9);
     const createdAt = new Date().toISOString();
-    const newContact = { id, createdAt, ...values };
-    fakeContacts.records[id] = newContact;
-    return newContact;
+    const newTask = { id, createdAt, ...values };
+    fakeContacts.records[id] = newTask;
+    return newTask;
   },
 
-  async set(id: string, values: ContactMutation): Promise<ContactRecord> {
+  async set(id: string, values: TaskDetails): Promise<ContactRecord> {
     const contact = await fakeContacts.get(id);
     invariant(contact, `No contact found for ${id}`);
     const updatedContact = { ...contact, ...values };
@@ -73,8 +69,8 @@ export async function getContacts(query?: string | null) {
   return contacts.sort(sortBy("last", "createdAt"));
 }
 
-export async function createEmptyContact() {
-  const contact = await fakeContacts.create({});
+export async function addNewTask(taskDetails: TaskDetails) {
+  const contact = await fakeContacts.create(taskDetails);
   return contact;
 }
 
