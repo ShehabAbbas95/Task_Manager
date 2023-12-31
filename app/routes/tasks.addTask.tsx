@@ -1,6 +1,7 @@
 import { Form, useNavigate } from "@remix-run/react";
-import { addNewTask } from "../data";
+import { addNewTask } from "../lib/data";
 import { ActionFunctionArgs, redirect } from "@remix-run/node";
+import Button from "../Components/UI/Button";
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   // Get the form data
@@ -8,8 +9,10 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   // Extract the task details from the form data
   const details = Object.fromEntries(formData);
   await addNewTask(details);
-  return redirect(`/`);
+  return redirect(`/tasks/viewTasks`);
 };
+export const inputsStyle =
+  "text-white mb-5 bg-gray-100 border border-gray-300  text-md rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 ";
 
 export default function AddTask() {
   const navigate = useNavigate();
@@ -17,28 +20,24 @@ export default function AddTask() {
     <div className="flex justify-center">
       <Form className="my-4" id="contact-form" method="post">
         <p>Title</p>
+
         <input
-          className="border-2"
+          type="text"
           aria-label="Title"
           name="title"
-          type="text"
-          placeholder="title"
+          className={inputsStyle}
         />
-
         <p>Description</p>
         <p>
-          <textarea className="border-2" name="desc" rows={6} />
+          <textarea className={inputsStyle} name="description" rows={6} />
         </p>
         <div className="px-2 flex gap-4">
-          <button className="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded">
+          <Button type="submit" color="blue">
             Add Task
-          </button>
-          <button
-            onClick={() => navigate(-1)}
-            className="bg-red-500 hover:bg-red-400 text-white font-bold py-2 px-4 border-b-4 border-red-700 hover:border-red-500 rounded"
-          >
+          </Button>
+          <Button type="button" color="red" onClick={() => navigate("/")}>
             Cancel
-          </button>
+          </Button>
         </div>
       </Form>
     </div>
