@@ -6,40 +6,15 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
-  useLoaderData,
 } from "@remix-run/react";
-import { LinksFunction, LoaderFunctionArgs, json } from "@remix-run/node";
+import { LinksFunction } from "@remix-run/node";
 import stylesheet from "./tailwind.css";
-import toast, { Toaster } from "react-hot-toast";
-import { getToast } from "remix-toast";
-import { useEffect } from "react";
 
-export const loader = async ({ request }: LoaderFunctionArgs) => {
-  const toastData = await getToast(request);
-  return json(toastData.toast);
-};
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: stylesheet },
 ];
 
 export default function App() {
-  const toastData = useLoaderData<typeof loader>();
-  useEffect(() => {
-    // Check if toastData is not null and not undefined
-    if (toastData) {
-      switch (toastData.type) {
-        case "success":
-          toast.success(toastData.message);
-          return;
-        case "error":
-          toast.error(toastData.message);
-          break;
-        default:
-          break;
-      }
-    }
-  }, [toastData]);
-
   return (
     <html lang="en">
       <head>
@@ -49,7 +24,6 @@ export default function App() {
         <Links />
       </head>
       <body>
-        <Toaster />
         <div className="mt-6 ">
           <h1 className="font-bold text-center text-3xl">Task Manager</h1>
           <nav>

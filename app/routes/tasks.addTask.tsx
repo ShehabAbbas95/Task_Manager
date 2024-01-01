@@ -1,9 +1,8 @@
 import { Form, useNavigate } from "@remix-run/react";
 import { addNewTask } from "../lib/data";
-import { ActionFunctionArgs } from "@remix-run/node";
+import { ActionFunctionArgs, redirect } from "@remix-run/node";
 import Button from "../Components/UI/Button";
 import { z } from "zod";
-import { redirectWithError, redirectWithSuccess } from "remix-toast";
 
 const Task = z.object({
   title: z
@@ -28,13 +27,11 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   try {
     Task.parse(details);
   } catch (error) {
-    // showToast("aisudiuasdiuasdui", true);
-    return redirectWithError(`/tasks/addTask`, "Task Details Must be Valid ");
+    throw new Error("Task Details Must be Valid ");
   }
   await addNewTask(details);
-  return redirectWithSuccess(`/tasks/viewTasks`, "Task Added Successfully");
+  return redirect(`/tasks/viewTasks`);
 };
-
 export const inputsStyle =
   "text-white mb-5 bg-gray-100 border border-gray-300  text-md rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 ";
 
