@@ -1,21 +1,46 @@
 import { Form, useNavigate } from "@remix-run/react";
 import { addNewTask } from "../lib/data";
-import { ActionFunctionArgs, redirect } from "@remix-run/node";
+import { ActionFunctionArgs } from "@remix-run/node";
 import Button from "../Components/UI/Button";
+import { z } from "zod";
+import { redirectWithError, redirectWithSuccess } from "remix-toast";
 
+const Task = z.object({
+  title: z
+    .string()
+    .min(1)
+    .refine((value) => value.trim().length > 0, {
+      message: "Title must not be empty or contain only spaces",
+    }),
+  description: z
+    .string()
+    .min(1)
+    .refine((value) => value.trim().length > 0, {
+      message: "Description must not be empty or contain only spaces",
+    }),
+});
 export const action = async ({ request }: ActionFunctionArgs) => {
+  if (request.method !== "POST") return;
   // Get the form data
   const formData = await request.formData();
   // Extract the task details from the form data
   const details = Object.fromEntries(formData);
+  try {
+    Task.parse(details);
+  } catch (error) {
+    // showToast("aisudiuasdiuasdui", true);
+    return redirectWithError(`/tasks/addTask`, "Task Details Must be Valid ");
+  }
   await addNewTask(details);
-  return redirect(`/tasks/viewTasks`);
+  return redirectWithSuccess(`/tasks/viewTasks`, "Task Added Successfully");
 };
+
 export const inputsStyle =
   "text-white mb-5 bg-gray-100 border border-gray-300  text-md rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 ";
 
 export default function AddTask() {
   const navigate = useNavigate();
+
   return (
     <div className="flex justify-center">
       <Form className="my-4" id="contact-form" method="post">

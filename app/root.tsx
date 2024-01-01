@@ -6,15 +6,40 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useLoaderData,
 } from "@remix-run/react";
-import { LinksFunction } from "@remix-run/node";
+import { LinksFunction, LoaderFunctionArgs, json } from "@remix-run/node";
 import stylesheet from "./tailwind.css";
+import toast, { Toaster } from "react-hot-toast";
+import { getToast } from "remix-toast";
+import { useEffect } from "react";
 
+export const loader = async ({ request }: LoaderFunctionArgs) => {
+  const toastData = await getToast(request);
+  return json(toastData.toast);
+};
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: stylesheet },
 ];
 
 export default function App() {
+  const toastData = useLoaderData<typeof loader>();
+  useEffect(() => {
+    // Check if toastData is not null and not undefined
+    if (toastData) {
+      switch (toastData.type) {
+        case "success":
+          toast.success(toastData.message);
+          return;
+        case "error":
+          toast.error(toastData.message);
+          break;
+        default:
+          break;
+      }
+    }
+  }, [toastData]);
+
   return (
     <html lang="en">
       <head>
@@ -24,23 +49,9 @@ export default function App() {
         <Links />
       </head>
       <body>
+        <Toaster />
         <div className="mt-6 ">
           <h1 className="font-bold text-center text-3xl">Task Manager</h1>
-          {/* <div>
-            <Form id="search-form" role="search">
-              <input
-                id="q"
-                aria-label="Search contacts"
-                placeholder="Search"
-                type="search"
-                name="q"
-              />
-              <div id="search-spinner" aria-hidden hidden={true} />
-            </Form>
-            <Form method="post">
-              <button type="submit">New</button>
-            </Form>
-          </div> */}
           <nav>
             <ul className="flex flex-row justify-center gap-5 mt-6">
               <li>
@@ -50,7 +61,6 @@ export default function App() {
                 >
                   Add New Task
                 </Link>
-                {/* <button className="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded"></button> */}
               </li>
               <li>
                 <Link
@@ -66,7 +76,6 @@ export default function App() {
         <div id="detail">
           <Outlet />
         </div>
-
         <ScrollRestoration />
         <Scripts />
         <LiveReload />

@@ -3,7 +3,7 @@ import invariant from "tiny-invariant";
 import { getTask } from "../lib/data";
 import { Form, Link, useLoaderData } from "@remix-run/react";
 import { inputsStyle } from "./tasks.addTask";
-import Button from "~/Components/UI/Button";
+import Button from "../Components/UI/Button";
 
 export const loader = async ({ params }: LoaderFunctionArgs) => {
   invariant(params.taskId, "Missing contactId param");
