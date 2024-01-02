@@ -37,7 +37,7 @@ export default function TaskEdit() {
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(e.target.value);
   };
-  const handleDescriptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setDescription(e.target.value);
   };
 

@@ -15,17 +15,13 @@ function ViewTasks() {
     <div className="flex flex-row p-8 gap-4">
       {tasks.length ? (
         tasks.map((task) => (
-          // <li key={task.id}>
-          //   <p>{task.title}</p>
-          //   <p>{task.desc}</p>
-          // </li>
+         
           <Card key={task.id} task={task} />
         ))
       ) : (
         // eslint-disable-next-line react/no-unescaped-entities
         <p>You didn't add any tasks yet </p>
       )}
-      {/* </ul> */}
     </div>
   );
 }
