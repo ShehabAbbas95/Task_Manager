@@ -1,7 +1,7 @@
 import { json } from "@remix-run/node";
-import { getTasks } from "../lib/data";
 import { useLoaderData } from "@remix-run/react";
-import Card from "../Components/UI/Card";
+import Card from "~/routes/tasks.view-tasks/card";
+import { getTasks } from "~/lib/data";
 
 export const loader = async () => {
   const tasks = await getTasks();
@@ -10,22 +10,16 @@ export const loader = async () => {
 
 function ViewTasks() {
   const { tasks } = useLoaderData<typeof loader>();
-  console.log(tasks);
+
   return (
     <div className="flex flex-row p-8 gap-4">
       {tasks.length ? (
         tasks.map((task) => (
-          // <li key={task.id}>
-          //   <p>{task.title}</p>
-          //   <p>{task.desc}</p>
-          // </li>
           <Card key={task.id} task={task} />
         ))
-      ) : (
-        // eslint-disable-next-line react/no-unescaped-entities
-        <p>You didn't add any tasks yet </p>
-      )}
-      {/* </ul> */}
+      ) :
+        (<p>You didn't add any tasks yet </p>)
+      }
     </div>
   );
 }

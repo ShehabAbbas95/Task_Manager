@@ -7,31 +7,37 @@ import {
 import invariant from "tiny-invariant";
 import { getTask, updateTask } from "../lib/data";
 import { Form, useLoaderData, useNavigate } from "@remix-run/react";
-import { inputsStyle } from "./tasks.addTask";
+import { inputsStyle } from "./tasks.add-task";
 import Button from "../Components/UI/Button";
 import { useState } from "react";
 
 export const loader = async ({ params }: LoaderFunctionArgs) => {
   invariant(params.taskId, "Missing contactId param");
+
   const task = await getTask(params.taskId);
   if (!task) {
     throw new Response("Not Found", { status: 404 });
   }
+
   return json({ task });
 };
 
 export const action = async ({ params, request }: ActionFunctionArgs) => {
   invariant(params.taskId, "Missing taskId param");
+
   const formData = await request.formData();
   const updates = Object.fromEntries(formData);
   await updateTask(params.taskId, updates);
+
   return redirect(`/tasks/${params.taskId}`);
 };
 
 export default function TaskEdit() {
   const { task } = useLoaderData<typeof loader>();
+
   const [title, setTitle] = useState(task.title);
   const [description, setDescription] = useState(task.description);
+
   const navigate = useNavigate();
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

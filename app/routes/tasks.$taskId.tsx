@@ -1,17 +1,28 @@
-import { LoaderFunctionArgs, json } from "@remix-run/node";
+import { ActionFunctionArgs, LoaderFunctionArgs, json, redirect } from "@remix-run/node";
 import invariant from "tiny-invariant";
-import { getTask } from "../lib/data";
+import { deleteTask, getTask } from "../lib/data";
 import { Form, Link, useLoaderData } from "@remix-run/react";
-import { inputsStyle } from "./tasks.addTask";
+import { inputsStyle } from "./tasks.add-task";
 import Button from "../Components/UI/Button";
 
 export const loader = async ({ params }: LoaderFunctionArgs) => {
   invariant(params.taskId, "Missing contactId param");
+
   const task = await getTask(params.taskId);
+
   if (!task) {
     throw new Response("Not Found", { status: 404 });
   }
+
   return json({ task });
+};
+
+export const ErrorBoundary = () => {
+  return (
+    <div className="flex justify-center">
+      <p className="text-red-500">Task Not Found</p>
+    </div>
+  );
 };
 
 export default function TaskDetails() {
@@ -49,7 +60,6 @@ export default function TaskDetails() {
           Edit
         </Link>
         <Form
-          action="destroy"
           method="post"
           onSubmit={(event) => {
             const response = confirm(
@@ -68,3 +78,11 @@ export default function TaskDetails() {
     </div>
   );
 }
+
+export const action = async ({ params }: ActionFunctionArgs) => {
+  invariant(params.taskId, "Missing taskId param");
+  await deleteTask(params.taskId);
+
+  return redirect(`/`);
+};
+

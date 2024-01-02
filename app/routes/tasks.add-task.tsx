@@ -1,48 +1,36 @@
-import { Form, useNavigate } from "@remix-run/react";
+import { Form, useActionData, useNavigate } from "@remix-run/react";
 import { addNewTask } from "../lib/data";
-import { ActionFunctionArgs, redirect } from "@remix-run/node";
+import { ActionFunctionArgs, json, redirect } from "@remix-run/node";
 import Button from "../Components/UI/Button";
-import { z } from "zod";
 
-const Task = z.object({
-  title: z
-    .string()
-    .min(1)
-    .refine((value) => value.trim().length > 0, {
-      message: "Title must not be empty or contain only spaces",
-    }),
-  description: z
-    .string()
-    .min(1)
-    .refine((value) => value.trim().length > 0, {
-      message: "Description must not be empty or contain only spaces",
-    }),
-});
 export const action = async ({ request }: ActionFunctionArgs) => {
-  if (request.method !== "POST") return;
-  // Get the form data
   const formData = await request.formData();
   // Extract the task details from the form data
   const details = Object.fromEntries(formData);
-  try {
-    Task.parse(details);
-  } catch (error) {
-    throw new Error("Task Details Must be Valid ");
+
+  // error handling
+  if (!details.title) {
+    return json({ message: "Title is required" });
+  } else if (!details.description) {
+    return json({ message: "Description is required" });
   }
+
   await addNewTask(details);
-  return redirect(`/tasks/viewTasks`);
+  return redirect(`/tasks/view-tasks`);
 };
+
 export const inputsStyle =
   "text-white mb-5 bg-gray-100 border border-gray-300  text-md rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 ";
 
 export default function AddTask() {
   const navigate = useNavigate();
+  const error = useActionData<typeof action>();
 
   return (
     <div className="flex justify-center">
       <Form className="my-4" id="contact-form" method="post">
         <p>Title</p>
-
+        {error && <p className="text-red-500">{error.message}</p>}
         <input
           type="text"
           aria-label="Title"
@@ -64,4 +52,4 @@ export default function AddTask() {
       </Form>
     </div>
   );
-}
+};

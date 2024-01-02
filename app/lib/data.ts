@@ -90,17 +90,3 @@ export async function updateTask(id: string, updates: TaskDetails) {
 export async function deleteTask(id: string) {
   fakeTasks.destroy(id);
 }
-
-[
-  {
-    id: 1,
-    title: "asydgyias",
-    description: "auisdiasiudg",
-  },
-];
-// .forEach((contact) => {
-//   fakeContacts.create({
-//     ...contact,
-//     id: `${contact.first.toLowerCase()}-${contact.last.toLocaleLowerCase()}`,
-//   });
-// });
